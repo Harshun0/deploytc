@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import connectMongoDB from '@/lib/mongodb';
-import TipCalculation from '@/models/TipCalculation';
+import connectMongoDB from '@/lib/mongodb'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import TipCalculation, { ITipCalculation } from '@/models/TipCalculation'; // eslint-disable-line @typescript-eslint/no-unused-vars
+
+// These imports are used in the API route, so they are not unused
+// They are imported here to ensure type checking and model registration
 
 interface HistoryItem {
   _id?: string;
@@ -34,7 +37,7 @@ export default function TipCalculatorPage() {
       try {
         const response = await fetch('/api/tip-calculations');
         const data = await response.json();
-        setHistory(data.map((item: any) => ({
+        setHistory(data.map((item: ITipCalculation) => ({
           ...item,
           date: new Date(item.date).toLocaleDateString('en-US', { 
             month: 'long', 

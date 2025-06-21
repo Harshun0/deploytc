@@ -11,12 +11,12 @@ interface MongoConnection {
   promise: Promise<mongoose.Connection> | null;
 }
 
-const globalAny: any = global;
-let cached: MongoConnection = globalAny.mongoose;
-
-if (!cached) {
-  cached = globalAny.mongoose = { conn: null, promise: null };
+interface GlobalWithMongoose {
+  mongoose?: MongoConnection;
 }
+
+const globalAny = global as unknown as GlobalWithMongoose;
+let cached: MongoConnection = globalAny.mongoose || { conn: null, promise: null };
 
 async function connectMongoDB() {
   if (cached.conn) {
