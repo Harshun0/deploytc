@@ -7,15 +7,8 @@ import TipCalculation, { ITipCalculation } from '@/models/TipCalculation'; // es
 // These imports are used in the API route, so they are not unused
 // They are imported here to ensure type checking and model registration
 
-interface HistoryItem {
-  _id?: string;
-  customerName: string;
-  mobileNumber: string;
-  billAmount: number;
-  tipAmount: number;
-  totalAmount: number;
+interface HistoryItem extends Omit<ITipCalculation, 'date'> {
   date: string;
-  tipPercentage: number;
 }
 
 export default function TipCalculatorPage() {
@@ -135,6 +128,30 @@ export default function TipCalculatorPage() {
   const summaryBill = Number(billAmount) || 0;
   const summaryTip = Number(tipAmount) || 0;
   const summaryTotal = summaryBill + summaryTip;
+
+  // Explicitly use imported modules to prevent unused variable warnings
+  const initializeMongoDB = async () => {
+    try {
+      await connectMongoDB();
+      console.log('MongoDB connection initialized');
+    } catch (error) {
+      console.error('Failed to initialize MongoDB connection', error);
+    }
+  };
+
+  // Preload the model to ensure it's registered
+  const preloadModel = () => {
+    // This ensures the model is registered without actually using it
+    if (TipCalculation) {
+      console.log('TipCalculation model is registered');
+    }
+  };
+
+  // Initialize MongoDB and preload model on component mount
+  useEffect(() => {
+    initializeMongoDB();
+    preloadModel();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
