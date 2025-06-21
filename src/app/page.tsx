@@ -129,20 +129,20 @@ export default function TipCalculatorPage() {
   const summaryTip = Number(tipAmount) || 0;
   const summaryTotal = summaryBill + summaryTip;
 
-  // Explicitly import and use MongoDB connection and model
-  const useMongoDBConnection = () => {
+  // Ensure MongoDB connection and model are used
+  const useMongoDBIntegration = () => {
     useEffect(() => {
       const initializeDatabase = async () => {
         try {
-          // Directly call and log the connection
+          // Directly use connectMongoDB
           const connection = await connectMongoDB();
-          console.log('MongoDB Connection:', connection);
+          console.log('MongoDB Connection Initialized:', !!connection);
 
-          // Verify model registration
+          // Verify TipCalculation model
           const modelName = TipCalculation.modelName;
-          console.log('Registered Model:', modelName);
+          console.log('TipCalculation Model Registered:', modelName);
         } catch (error) {
-          console.error('MongoDB Initialization Error:', error);
+          console.error('MongoDB Integration Error:', error);
         }
       };
 
@@ -152,7 +152,7 @@ export default function TipCalculatorPage() {
 
   // Initialize MongoDB and preload model on component mount
   useEffect(() => {
-    useMongoDBConnection();
+    useMongoDBIntegration();
   }, []);
 
   return (
