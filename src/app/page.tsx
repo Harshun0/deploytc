@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import connectMongoDB from '@/lib/mongodb'; // eslint-disable-line @typescript-eslint/no-unused-vars
-import TipCalculation, { ITipCalculation } from '@/models/TipCalculation'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import connectMongoDB from '@/lib/mongodb';
+import TipCalculation, { ITipCalculation } from '@/models/TipCalculation';
 
 // These imports are used in the API route, so they are not unused
 // They are imported here to ensure type checking and model registration
@@ -129,28 +129,30 @@ export default function TipCalculatorPage() {
   const summaryTip = Number(tipAmount) || 0;
   const summaryTotal = summaryBill + summaryTip;
 
-  // Explicitly use imported modules to prevent unused variable warnings
-  const initializeMongoDB = async () => {
-    try {
-      await connectMongoDB();
-      console.log('MongoDB connection initialized');
-    } catch (error) {
-      console.error('Failed to initialize MongoDB connection', error);
-    }
-  };
+  // Explicitly import and use MongoDB connection and model
+  const useMongoDBConnection = () => {
+    useEffect(() => {
+      const initializeDatabase = async () => {
+        try {
+          // Directly call and log the connection
+          const connection = await connectMongoDB();
+          console.log('MongoDB Connection:', connection);
 
-  // Preload the model to ensure it's registered
-  const preloadModel = () => {
-    // This ensures the model is registered without actually using it
-    if (TipCalculation) {
-      console.log('TipCalculation model is registered');
-    }
+          // Verify model registration
+          const modelName = TipCalculation.modelName;
+          console.log('Registered Model:', modelName);
+        } catch (error) {
+          console.error('MongoDB Initialization Error:', error);
+        }
+      };
+
+      initializeDatabase();
+    }, []);
   };
 
   // Initialize MongoDB and preload model on component mount
   useEffect(() => {
-    initializeMongoDB();
-    preloadModel();
+    useMongoDBConnection();
   }, []);
 
   return (
